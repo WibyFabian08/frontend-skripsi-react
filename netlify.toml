@@ -1,0 +1,10 @@
+[build]
+  command = "CI='' npm run build"
+  commandOrigin = "config"
+  publish = "/opt/build/repo/build"
+  publishOrigin = "config"
+
+[[redirects]]
+  from = "/*"
+  status = 200
+  to = "/index.html"

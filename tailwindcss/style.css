@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Poppins";
+}
+
+.hero {
+  background-image: url("/public/images/hero.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.navbar {
+  height: 60px;
+}
+
+.hero-card {
+  background-color: white;
+  /* color: #23A6F0; */
+  color: black;
+}
+
+.hero-card:hover {
+  background-color: #23a6f0;
+  color: white;
+}
+
+.slick-prev {
+  left: 3% !important;
+  z-index: 1;
+}
+.slick-next {
+  right: 3% !important;
+  z-index: 1;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: gray;
+}
+::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+}
