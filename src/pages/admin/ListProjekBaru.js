@@ -7,6 +7,7 @@ import { showError, showSuccess } from "../../utils/showNotif";
 import { NotifContainer } from "../../elements";
 import { Link } from "react-router-dom";
 import { deleteLowongan, getLowongan } from "../../redux/action/lowonganProjek";
+import convertRupiah from "../../utils/convertRupiah";
 
 const ListProjekBaru = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -112,7 +113,7 @@ const ListProjekBaru = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-right text-gray-500">
-                            Rp.{data.RAB || "-"}
+                            Rp. {convertRupiah(data.RAB) || "-"}
                           </td>
                           <td className="flex items-center justify-center gap-2 px-6 py-4">
                             <Link
@@ -133,17 +134,6 @@ const ListProjekBaru = () => {
                             >
                               Delete
                             </button>
-                          </td>
-                        </tr>
-                      );
-                    } else {
-                      return (
-                        <tr>
-                          <td
-                            colSpan="7"
-                            className="px-6 py-4 text-xl text-center text-gray-400"
-                          >
-                            Data tidak ditemukan
                           </td>
                         </tr>
                       );

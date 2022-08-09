@@ -22,9 +22,10 @@ import {
   pilihKontraktor,
   updateRangking,
 } from "../../redux/action/rangking";
+import convertRupiah from "../../utils/convertRupiah";
 
 const ListCalonKontraktor = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const params = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenPenilaian, setIsOpenPenilaian] = useState(false);
@@ -42,6 +43,7 @@ const ListCalonKontraktor = () => {
   const [hasilRangking, setHasilRangking] = useState([]);
   const [isLoadingRangking, setIsLoadingRangking] = useState(false);
   const [isLoadingUpdateRangking, setIsLoadingUpdateRangking] = useState(false);
+  const [tabelHead, setTableHead] = useState([]);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -60,11 +62,11 @@ const ListCalonKontraktor = () => {
 
   const handlePilihKontraktor = (id) => {
     const data = {
-      kontraktorId: id
-    }
-    dispatch(pilihKontraktor(params.id, data, navigate))
+      kontraktorId: id,
+    };
+    dispatch(pilihKontraktor(params.id, data, navigate));
     dispatch(updateRangking(params.id, setIsLoadingUpdateRangking));
-  }
+  };
 
   const handleCreateRangking = () => {
     const data = {
@@ -87,7 +89,7 @@ const ListCalonKontraktor = () => {
     };
 
     dispatch(
-      createPenilaianKontaktor(data, setIsLoadingPenilaian, setDataPenilaian)
+      createPenilaianKontaktor(data, setIsLoadingPenilaian, setDataPenilaian, setTableHead)
     );
   };
 
@@ -148,7 +150,13 @@ const ListCalonKontraktor = () => {
   }, [dispatch, params.id]);
 
   useEffect(() => {
-    dispatch(getPenilianKontraktorByLowonganId(params.id, setDataPenilaian));
+    dispatch(
+      getPenilianKontraktorByLowonganId(
+        params.id,
+        setDataPenilaian,
+        setTableHead
+      )
+    );
   }, [dispatch, params.id]);
 
   useEffect(() => {
@@ -162,19 +170,19 @@ const ListCalonKontraktor = () => {
   }, [dispatch, params.id]);
 
   useEffect(() => {
-    let buffer = null;
+    let buffer = [];
     if (data.length > 0) {
-      data.find((data) => {
-        if (!data.isAssessment) {
-          buffer = data;
+      data.filter((data) => {
+        if (data.isAssessment === false) {
+          buffer.push(data);
         }
       });
     }
 
-    if (buffer == null) {
-      setIsReady(true);
-    } else {
+    if (buffer.length > 0) {
       setIsReady(false);
+    } else {
+      setIsReady(true);
     }
   }, [data]);
 
@@ -211,9 +219,6 @@ const ListCalonKontraktor = () => {
                 <tr>
                   <th className="px-6 py-2 text-xs text-gray-500">No</th>
                   <th className="px-6 py-2 text-xs text-gray-500">
-                    Nama Projek
-                  </th>
-                  <th className="px-6 py-2 text-xs text-gray-500">
                     Kontraktor
                   </th>
                   <th className="px-6 py-2 text-xs text-gray-500">
@@ -235,18 +240,14 @@ const ListCalonKontraktor = () => {
                           {index + 1}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-left text-gray-500">
-                            {data.lowonganId.name || "-"}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
                           <div className="text-sm text-center text-gray-500">
                             {data.kontraktorId.fullname || "-"}
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-sm text-center text-gray-500">
-                            Rp.{data.lampiran.hargapenawaran || "-"}
+                            Rp.{" "}
+                            {convertRupiah(data.lampiran.hargapenawaran) || "-"}
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -295,7 +296,8 @@ const ListCalonKontraktor = () => {
             </table>
           </div>
         </div>
-        {isReady && (
+
+        {isReady && data.length > 0 && (
           <>
             <div className="mt-5">
               <h6
@@ -333,39 +335,16 @@ const ListCalonKontraktor = () => {
                       <th className="px-6 py-2 text-xs text-gray-500">
                         Kontraktor
                       </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Kemampuan Baca Gambar
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Harga Penawaran
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Hasil Presentasi
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Jumlah Personil
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Keuangan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Legalitas Perusahaan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Pengalaman
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Peralatan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Portofolio / Jumlah Projek
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Sertifikat
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Tanggung Jawab
-                      </th>
+                      {tabelHead.map((data, index) => {
+                        return (
+                          <th
+                            className="px-6 py-2 text-xs text-gray-500"
+                            key={index}
+                          >
+                            {data}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody className="bg-white">
@@ -383,61 +362,15 @@ const ListCalonKontraktor = () => {
                               {data.kontraktorId.fullname || "-"}
                             </div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.bacagambar || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.hargapenawaran || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.hasilpresentasi || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.jumlahpersonil || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.keuangan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.legalitasperusahaan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.pengalaman || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.peralatan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.portofolio || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.sertifikat || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.penilaian.tanggungjawab || "-"}
-                            </div>
-                          </td>
+                          {tabelHead.map((item, index2) => {
+                            return (
+                              <td className="px-6 py-4" key={index2}>
+                                <div className="text-sm text-center text-gray-500">
+                                  {data.penilaian[item] || "-"}
+                                </div>
+                              </td>
+                            );
+                          })}
                         </tr>
                       );
                     })}
@@ -488,39 +421,16 @@ const ListCalonKontraktor = () => {
                       <th className="px-6 py-2 text-xs text-gray-500">
                         Kontraktor
                       </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Kemampuan Baca Gambar
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Harga Penawaran
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Hasil Presentasi
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Jumlah Personil
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Keuangan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Legalitas Perusahaan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Pengalaman
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Peralatan
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Portofolio / Jumlah Projek
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Sertifikat
-                      </th>
-                      <th className="px-6 py-2 text-xs text-gray-500">
-                        Tanggung Jawab
-                      </th>
+                      {tabelHead.map((data, index) => {
+                        return (
+                          <th
+                            className="px-6 py-2 text-xs text-gray-500"
+                            key={index}
+                          >
+                            {data}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody className="bg-white">
@@ -538,61 +448,15 @@ const ListCalonKontraktor = () => {
                               {data.kontraktorId.fullname || "-"}
                             </div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.bacagambar || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.hargapenawaran || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.hasilpresentasi || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.jumlahpersonil || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.keuangan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.legalitasperusahaan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.pengalaman || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.peralatan || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.portofolio || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.sertifikat || "-"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
-                              {data.normalisasi.tanggungjawab || "-"}
-                            </div>
-                          </td>
+                          {tabelHead.map((item, index2) => {
+                            return (
+                              <td className="px-6 py-4" key={index2}>
+                                <div className="text-sm text-center text-gray-500">
+                                  {data.normalisasi[item] || "-"}
+                                </div>
+                              </td>
+                            );
+                          })}
                         </tr>
                       );
                     })}
@@ -658,7 +522,9 @@ const ListCalonKontraktor = () => {
                           <td className="px-6 py-4">
                             <div className="text-sm text-center text-gray-500">
                               <button
-                                onClick={() => handlePilihKontraktor(data.kontraktorId._id)}
+                                onClick={() =>
+                                  handlePilihKontraktor(data.kontraktorId._id)
+                                }
                                 className="px-4 py-1 text-sm text-white bg-blue-400 rounded"
                               >
                                 {isLoadingUpdateRangking ? "Loading" : "Pilih"}

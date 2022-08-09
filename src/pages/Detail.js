@@ -305,7 +305,7 @@ const Detail = () => {
                         </div>
                       ) : (
                         <div className="mt-10 text-center text-md">
-                          Mandor belum memiliki portofolio
+                          Kontraktor belum memiliki portofolio
                         </div>
                       )}
                     </Tab.Panel>

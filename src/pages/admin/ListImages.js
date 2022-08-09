@@ -101,7 +101,7 @@ const ListImages = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-center text-gray-500">
-                            {data.mandorId.phone || "-"}
+                            {data.mandorId.phone != "null" ? data.mandorId.phone : "-"}
                           </td>
                           <td className="px-6 py-4 text-sm text-center text-gray-500">
                             {data.mandorId.email || "-"}

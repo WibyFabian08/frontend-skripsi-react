@@ -1,7 +1,7 @@
 import * as api from "../../api";
 
 export const createPenilaianKontaktor =
-  (data, setIsLoadingPenilaian, setDataPenilaian) => async (dispatch) => {
+  (data, setIsLoadingPenilaian, setDataPenilaian, setTableHead) => async (dispatch) => {
     setIsLoadingPenilaian(true);
     try {
       const response = await api.createPenilaianKontaktor(data);
@@ -12,7 +12,12 @@ export const createPenilaianKontaktor =
         const dataPenilaian = await api.getPenilianKontraktorByLowonganId(data.lowonganId);
 
       if (dataPenilaian.data.success) {
+        let buffer = []
         setDataPenilaian(dataPenilaian.data.data);
+        for (let property in dataPenilaian.data.data[0].penilaian) {
+          buffer.push(property)
+        }
+        setTableHead(buffer)
       }
       }
     } catch (err) {
@@ -22,12 +27,17 @@ export const createPenilaianKontaktor =
   };
 
 export const getPenilianKontraktorByLowonganId =
-  (id, setDataPenilaian) => async (dispatch) => {
+  (id, setDataPenilaian, setTableHead) => async (dispatch) => {
     try {
       const response = await api.getPenilianKontraktorByLowonganId(id);
 
       if (response.data.success) {
+        let buffer = []
         setDataPenilaian(response.data.data);
+        for (let property in response.data.data[0].penilaian) {
+          buffer.push(property)
+        }
+        setTableHead(buffer)
       }
     } catch (err) {
       console.log(err);

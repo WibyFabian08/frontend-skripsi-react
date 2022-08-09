@@ -88,7 +88,7 @@ const ListTender = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm text-center text-gray-500">
+                            <div className="py-1 text-xs text-center text-white bg-indigo-500 rounded-full">
                               {data.status || "-"}
                             </div>
                           </td>

@@ -80,14 +80,6 @@ const LowonganProjek = () => {
                     </div>
                   </div>
                 );
-              } else {
-                return (
-                  <div className="w-full mt-5 text-xl">
-                    <p className="text-center" style={{ color: "#0C0D36" }}>
-                      Lowongan Proyek Kosong
-                    </p>
-                  </div>
-                );
               }
             })}
         </div>

@@ -8,6 +8,8 @@ import { Fragment } from "react";
 import { TextInput } from "../../elements";
 import { Link } from "react-router-dom";
 
+import convertRupiah from '../../utils/convertRupiah'
+
 const RiwayatTender = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +90,7 @@ const RiwayatTender = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-right text-gray-500">
-                            Rp.{data.RAB || "-"}
+                            Rp. {convertRupiah(data.RAB) || "-"}
                           </td>
                           <td className="flex items-center justify-center gap-2 px-6 py-4">
                             <Link
@@ -97,17 +99,12 @@ const RiwayatTender = () => {
                             >
                               Lihat Hasil
                             </Link>
-                          </td>
-                        </tr>
-                      );
-                    } else {
-                      return (
-                        <tr>
-                          <td
-                            colSpan="7"
-                            className="px-6 py-4 text-xl text-center text-gray-400"
-                          >
-                            Data tidak ditemukan
+                            <Link
+                              to={`/admin/update/projek/${data._id}`}
+                              className="px-4 py-1 text-sm text-white transition-all duration-200 bg-green-400 rounded hover:bg-green-500"
+                            >
+                              Detail Proyek
+                            </Link>
                           </td>
                         </tr>
                       );

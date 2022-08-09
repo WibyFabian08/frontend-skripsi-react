@@ -12,6 +12,7 @@ import {
   createCalonkontraktor,
   getCalonKontraktorByLowonganId,
 } from "../../redux/action/calonKontraktor";
+import convertRupiah from "../../utils/convertRupiah";
 
 const DetailLowongan = () => {
   const { activeUser } = useSelector((state) => state.userState);
@@ -163,7 +164,7 @@ const DetailLowongan = () => {
                 Volume Pekerjaan : {input.volumePekerjaan || "-"} m
               </p>
               <p className="mb-1 text-lg text-gray-500">
-                Total Pagu : Rp.{input.RAB || "-"}
+                Total Pagu : Rp. {convertRupiah(input.RAB) || "-"}
               </p>
               <p className="mb-1 text-lg text-gray-500">
                 Rentang Pengerjaan : {input.waktuMulai || "-"} -{" "}
